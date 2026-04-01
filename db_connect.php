@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'restaurant_system';
+$dbname = 'restaurant_system6';
 $user = 'root';     
 $pass = '';        
 

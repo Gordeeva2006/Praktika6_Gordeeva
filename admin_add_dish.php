@@ -7,6 +7,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
+$CSRF = password_hash("SECRET", PASSWORD_DEFAULT);
+$_SESSION["CSRF"] = $CSRF;
+
 $message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -16,6 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = floatval($_POST['price']);
     $available = isset($_POST['available']) ? 1 : 0;
     $imageName = null;
+    $Token = $_POST["Token"];
+
+    if ($Token != $_SESSION["CSRF"]) {
+        exit;
+    }
 
     if (!empty($_FILES['image']['name'])) {
 
@@ -106,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form action="" method="POST" enctype="multipart/form-data">
+        <input type="text" value="<?= $CSRF?>" name="Token" style="display:none">
         
         <label>Название блюда:</label>
         <input type="text" name="name" required>
