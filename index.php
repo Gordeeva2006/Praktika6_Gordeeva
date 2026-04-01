@@ -1,6 +1,9 @@
 <?php
 	session_start();
 	include("./settings/connect_datebase.php");
+
+	$CSRF = password_hash("SECRET", PASSWORD_DEFAULT);
+	$_SESSION["CSRF"] = $CSRF;
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -58,6 +61,7 @@
 												echo 
 													'<div class="messages" id="'.$read_news["id"].'">
 														<input type="text">
+														<input type="text" value="'.$CSRF.'" style="display:none;">
 														<div class="button" style="float: right; margin-top: 0px; margin-right: 0px;" onclick="SendMessage(this)">Отправить</div>
 													</div>';
 											}
@@ -81,12 +85,14 @@
 	<script>
 		function SendMessage(sender) {
 			let Message = sender.parentElement.children[0].value;
+			let Token = sender.parentElement.children[1].value;
 			let IdPost = sender.parentElement.id;
 			if(Message == "") return;
 
 			var Data = new FormData();
 			Data.append("Message", Message);
 			Data.append("IdPost", IdPost);
+			Data.append("Token", Token);
 			
 			$.ajax({
 					url         : 'ajax/message.php',
